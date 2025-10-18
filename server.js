@@ -16,6 +16,7 @@ const globalErrorHandler = require("./middlewares/errorMiddleware");
 
 // Routes
 const mountRoutes = require("./routes");
+const { webhookCheckout } = require("./services/orderService");
 
 //connection with db
 DBConnection();
@@ -29,6 +30,13 @@ app.options(/.*/, cors());
 
 //compress all response
 app.use(compression());
+
+//Checkout webhook
+app.post(
+  "/webhook-checkout",
+  express.raw({ type: "application/json" }),
+  webhookCheckout
+);
 
 //override express query parser with qs
 app.set("query parser", (str) => qs.parse(str));
